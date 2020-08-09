@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}" >
+    <meta charset="UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <title>write view</title>
+    <style>
+        body{
+            height: 100%; width: 100%;
+        }
+        #writeDiv{
+            position: absolute;
+            left: 650px;
+            bottom: 120px;
+            font-size: 30px;
+        }
+        .fileBox{
+            position: relative;
+            top: 35px;
+        }
+        .fileBox input[type="file"] {
+             width: 0px; height: 0px;
+            padding: 0; margin: -1px; overflow: hidden;
+            clip:rect(0,0,0,0);
+            border: 0; }
+        .fileBox label {
+            padding: .5em .75em; color: black;
+            font-size: 15px;
+            vertical-align: middle;
+            background-color: lightgrey;
+            cursor: pointer;
+            border-style: solid;
+            border-width: 1px;
+        }
+    </style>
+    <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        function submitCheck() {
+            $('.account_val').each(function (index,item) {
+                if($(item).val().length<=0) {
+                    alert($(item).attr('name') + " 입력해주세요");
+                    $(item).focus();
+                    return false;
+                }
+                else if($('.account_val').length-1<=index){
+                    $("#writeForm").submit();
+                    alert("작성완료!")
+                }
+            });
+        }
+        function loseFocus (a) {
+            if(a.name==='id'){
+                var formatVal=a.value.replace(/ /gi,"");
+                if(a.value.length!==formatVal.length) {
+                    alert("이름에는 공백이 들어갈수없습니다");
+                    a.value=formatVal;
+                }
+            }
+            else if(a.name==='password'){
+                if(a.value.length<4 && a.value.length>0){
+                  alert("비밀번호는 최소 4자여야 합니다");
+                    setTimeout(function(){
+                        a.focus(); }, 15);
+                }
+            }
+        }
+        function clickCancel() {
+            $('#cancelForm').submit();
+        }
+        function inputFilename() {
+            var a=document.getElementById("ex_file").value;
+            var path=document.getElementById("ex_filename").value=a;
+            //var filename=path.replace(/\\/g,"");
+            var filename=path.replace("C:\\fakepath\\","");
+            document.getElementById("ex_filename").value=filename;
+        }
+    </script>
+</head>
+<body>
+<h1>WRITE!</h1>
+<div id="writeDiv">
+ <form action="/submit" id="cancelForm" method="post"></form>
+<form action="/submit" id="writeForm" method="post" enctype="multipart/form-data">
+    <div>
+        <label>Name:</label>
+        <br>
+        <input  type="text" class="account_val" name="id" id="id"  maxlength="5"
+        style="font-family:Arial,serif; font-size: 30px; height: 30px; width: 200px"
+                onblur="loseFocus(this)" />
+    </div>
+    <div>
+        <label>password:</label>
+        <br>
+        <input type="password" class="account_val" name="password" id="password" maxlength="4"
+         style="font-family:Arial,serif; font-size: 30px; height: 30px; width: 15%"
+               onblur="loseFocus(this);"/>
+    </div>
+    <div>
+        <label>title:</label>
+        <br>
+        <input type="text" class="account_val"  name="title" id="title" maxlength="20"
+               style="font-family:Arial,serif; font-size: 30px; height: 30px; width:700px"/>
+    </div>
+    <br>
+    <div>
+        <label>Contents:
+            <br>
+            <textarea style="resize:none;
+            font-family:Arial,serif; font-size: 30px;"
+                      cols="46" rows="6" class="account_val"
+                      name="contents" id="contents"></textarea>
+        </label>
+    </div>
+    <span class="fileBox">
+    <label for="ex_file">업로드</label>
+    <input type="file" name="file" id="ex_file" onchange="inputFilename()">
+    <input type="text" id="ex_filename"
+           style="position: relative; right: 15px; height: 20px; font-size: 20px" readonly>
+    </span>
+</form>
+<button type="button" onclick="submitCheck()" style="width: 70px; height: 40px;
+    position: relative; bottom: 10px; left: 540px">확인</button>
+<button type="button" onclick="clickCancel()" style="width: 70px; height: 40px;
+    position: relative; bottom: 10px; left: 565px">취소</button>
+</div>
+</body>
+</html>

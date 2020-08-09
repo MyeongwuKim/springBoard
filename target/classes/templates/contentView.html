@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}" >
+    <meta charset="UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <title>contentView</title>
+    <style>
+        body{
+            height: 100%; width: 100%;
+        }
+        .contentView {
+            position: absolute;
+            left: 260px;
+            bottom: 250px;
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+<h1>READ!</h1>
+<div class="contentView">
+    <label>Name:</label>
+    <br>
+    <input th:value="${account.id}" id="accountId"
+           style="font-family:Arial,serif; font-size: 30px; height: 30px; width:200px;
+           background-color: lightsteelblue; display: inline"  readonly>
+    <br>
+    <label>Date:</label>
+    <br>
+    <input th:value="${account.date}"
+                  style="font-family:Arial,serif; font-size: 30px; height: 30px;
+                  width: 700px; background-color: lightsteelblue; display: inline" readonly>
+    <br>
+    <label>Title:</label>
+    <br>
+    <input th:value="${account.title}"
+           style="font-family:Arial,serif; font-size: 30px; height: 30px;
+           width: 700px; background-color: lightsteelblue; display: inline" readonly>
+    <br>
+    <label style="display:none;">Contents:</label>
+    <br>
+    <textarea th:text="${account.contents}" style="display: inline-block; resize:none;
+            font-family:Arial,serif; font-size: 30px; background-color: beige"
+                      cols="46" rows="6" readonly></textarea>
+
+    <button type="button" onclick="openCheckWin('delete')" style="width: 70px; height: 40px;
+                position: relative; top: 70px; right: 80px">삭제</button>
+    <button type="button" onclick="returnBoardView()" style="width: 70px; height: 40px;
+                position: relative; top: 70px; right: 260px  ">확인</button>
+    <button type="button" onclick="openCheckWin('modify')" style="width: 70px; height: 40px;
+                position: relative; top: 70px; right: 885px">수정</button>
+</div>
+    <img th:if="${account.getFilename()}=='null'" th:src="@{img/noImage.jpg}" style=" display: inline; height: 600px;width: 600px;
+            position: relative; bottom: 100px;left: 1100px">
+    <img th:unless="${account.getFilename()}=='null'" th:src="@{'images/'+${account.filename}}" style=" display: inline; height: 600px;width: 600px;
+            position: relative; bottom: 100px;left: 1100px">
+
+<form action="/deleteOk" id="deleteOkForm" method="get">
+    <input type="hidden" name="titleNumber" th:value="${titleNumber}">
+</form>
+<form action="/contentView/modify" id="modifyForm" method="get">
+    <input type="hidden" name="titleNumber" th:value="${titleNumber}">
+</form>
+<form name="pathVariableForm"></form>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+    var newWindow;
+    var windowAction;
+    function openCheckWin(name) {
+        windowAction=name;
+        newWindow=window.open('/checkPassword','checkPassword','width=450,height=200,left=700,top=400');
+    }
+    function returnBoardView() {
+        var form=document.pathVariableForm;
+        var pathIndex=[[${boardInfo.getCurrentPage()}]];
+        form.action="/boardView/"+pathIndex;
+        form.submit();
+    }
+
+    function getAccountPassword() {
+        var password=[[${account.password}]];
+        return password;
+    }
+    function modifyPost() {
+        $('#modifyForm').submit();
+    }
+    function deleteOk() {
+        $('#deleteOkForm').submit();
+    }
+</script>
+</body>
+</html>

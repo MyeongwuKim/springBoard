@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <link rel="stylesheet" type="text/css" th:href="@{/style.css}" >
+        <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <title>Main</title>
+        <style>
+            body{
+                margin: auto;
+                text-align: center;
+                height: 100%; width: 100%;
+
+            }
+            button{
+                height: 130px; width: 200px; font-size: 30px; font-style: normal;
+            }
+        </style>
+
+</head>
+    <form action="/submit" class="viewBoardForm" method="post"></form>
+    <form action="/write" class="writeForm" method="get"></form>
+    <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        function clickViewBoard() {
+            $('.viewBoardForm').submit();
+        }
+        function clickWrite() {
+            $('.writeForm').submit();
+        }
+    </script>
+<body>
+<h1>~WELCOME! SPRING BOARD!~</h1>
+<div style="font-size: 100px; text-align: center; color: lightblue; margin-bottom: 100px">
+    할로~ 이건 내가만든 허접한 게시판~
+</div>
+<button type="button" onclick="clickViewBoard()">
+게시판<br> 보기</button>
+<button type="button" onclick="clickWrite()">
+    글작성<br> 하기</button>
+</body>
+</html>

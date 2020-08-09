@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}" >
+    <meta charset="UTF-8">
+    <title>searchView</title>
+    <style>
+        body{
+            height: 100%; width: 100%;
+        }
+        a{text-decoration: none;}
+        table{
+            width: 80%;
+            text-align: center;
+            font-size: 20px;
+            margin: auto;
+            border-collapse: collapse;
+        }
+        table.head{background-color: lightsteelblue}
+        tr{height: 50px;}
+        td.id{width: 100px;}
+        td.title{width: 370px;}
+        td.date{width: 270px;}
+
+        .page{
+            position: relative;
+            transform: translateY(100px);
+            font-size: 30px;
+            margin: 0 auto;
+            height: 50px;
+            width: 50px;
+        }
+        #rowTitle:hover{background: wheat}
+    </style>
+</head>
+<form action="/contentView" id="contentViewForm" method="get">
+    <input type="hidden" id="inputTitle" name="titleNumber">
+</form>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+    var formatTextIndex=1;
+    function titleClick(accounts) {
+        //click and submit
+        $('#inputTitle').val(accounts);
+        $('#contentViewForm').submit();
+    }
+</script>
+<script th:inline="javascript">
+    var searchAccountSize=[[${searchAccountList.size()}]];
+    function noSearchData() {
+        if(searchAccountSize<=0)
+            alert("검색결과가 없습니다");
+    }
+</script>
+<body onload="noSearchData()">
+<script th:inline="javascript">
+</script>
+<h1>SEARCH!</h1>
+<table border="1" class="head">
+    <tr>
+        <td class="id">작성자</td>
+        <td class="title" >제목</td>
+        <td class="date">날짜</td>
+    </tr>
+</table>
+<div style="height: 400px">
+    <table border="1" id="t01" class="bodyTable" th:each="account,i: ${searchAccountList}"
+           th:if="${i.index} < ${boardInfo.currentPage}*5 " >
+        <tbody th:object="${account} " class="bodyTr" th:if="${i.index} >= (${boardInfo.currentPage}-1)*5 ">
+        <td class="id" th:text="*{id}"></td>
+        <td class="title" id="rowTitle" style="cursor:pointer" th:onclick="|javascript:titleClick('*{titleNumber}')|"
+            th:text="*{title}" ></td>
+        <td class="date" th:text="*{date}"></td>
+        </tbody>
+    </table>
+</div>
+<script th:inline="javascript">
+    var myNode=document.getElementsByClassName([[${boardSearch.getSearchTarget()}]]);
+    var searchText=[[${boardSearch.getSearchText()}]];
+    var searchAccountSize=[[${searchAccountList.size()}]];
+
+    for(var i=1;i<=searchAccountSize;i++){
+        var formatText="";
+        var formatText="";
+        formatText=myNode[i].innerHTML.
+        replace(searchText,"<span style='color: red'>"+searchText+"</span>");
+        myNode[i].innerHTML=formatText;
+    }
+</script>
+<div class="page">
+    <script th:inline="javascript">
+        //create <a> dynamic elements
+        var maxPage=[[${boardInfo.getMaxPage()}]];
+        var searchTarget=[[${boardSearch.getSearchTarget()}]];
+        var searchText=[[${boardSearch.getSearchText()}]];
+
+        for (var i=1; i<=maxPage; i++) {
+            var $a = document.createElement('a');
+            $a.id="page"+i;
+            $a.href=i+'?'+'searchText='+searchText+'&'+'searchTarget='+searchTarget;
+            $a.innerText=i+" ";
+            $(".page").append($a);
+        }
+    </script>
+</div>
+</body>
+</html>

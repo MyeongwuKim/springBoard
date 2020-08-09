@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}" >
+    <meta charset="UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <title>Modify</title>
+    <style>
+        .contentView {
+            position: absolute;
+            left: 650px;
+            bottom: 240px;
+            font-size: 30px;
+        }
+        .fileBox{
+            position: relative;
+            top: 460px;
+            left: 490px;
+        }
+        .fileBox input[type="file"] {
+            width: 0px; height: 0px;
+            padding: 0; margin: -1px; overflow: hidden;
+            clip:rect(0,0,0,0);
+            border: 0; }
+        .fileBox label {
+            padding: .5em .75em; color: black;
+            font-size: 15px;
+            vertical-align: middle;
+            background-color: lightgrey;
+            cursor: pointer;
+            border-style: solid;
+            border-width: 1px;
+        }
+    </style>
+</head>
+<body>
+<h1>Modify!</h1>
+<form action="/modifyOk" id="modifyOkForm" method="post" enctype="multipart/form-data">
+<div class="contentView">
+    <label>Name:</label>
+    <br>
+    <input th:value="${account.id}" id="accountId" name="id"  class="account_val"
+           style="font-family:Arial,serif; font-size: 30px; height: 30px; width: 200px" >
+    <br>
+    <label>password:</label>
+    <br>
+    <input  type="password" th:value="${account.password}" name="password"
+            class="account_val" maxlength="4"
+           style="font-family:Arial,serif; font-size: 30px; height: 30px;
+                  width: 700px;"  onblur="loseFocus(this)">
+    <br>
+    <label>Title:</label>
+    <br>
+    <input th:value="${account.title}" name="title"  class="account_val"
+           style="font-family:Arial,serif; font-size: 30px; height: 30px;
+           width: 700px;">
+    <br>
+    <label>Contents:</label>
+    <br>
+    <textarea th:text="${account.contents}" name="contents"   class="account_val"
+              style="resize:none; font-family:Arial,serif; font-size: 30px;" cols="46" rows="6" ></textarea>
+</div>
+<button type="button" onclick="clickCancel()" style="width: 70px; height: 40px;
+                position: relative; top: 460px; left: 1290px">취소</button>
+<button type="button" onclick="modifyCheck()" style="width: 70px; height: 40px;
+                position: relative; top: 460px; left: 1100px">확인</button>
+<input type="hidden" name="titleNumber" th:value="${titleNumber}">
+    <span class="fileBox">
+    <label for="ex_file">업로드</label>
+    <input type="file" name="file" id="ex_file" onchange="inputFilename()">
+    <input type="text" id="ex_filename" th:value="${account.filename}"
+                style="position: relative; right: 6px; top:6px; height: 20px; font-size: 20px" readonly>
+    </span>
+</form>
+<form action="/contentView" id="contentForm" method="get">
+    <input type="hidden" name="titleNumber" th:value="${titleNumber}">
+</form>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+</script>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+    var titleNumber=[[${account.getTitleNumber()}]];
+    function modifyCheck() {
+        $('.account_val').each(function (index,item) {
+            if($(item).val().length<=0) {
+                alert($(item).attr('name') + " 입력해주세요");
+                $(item).focus();
+                return false;
+            }
+            else if($('.account_val').length-1<=index){
+                $('#modifyOkForm').submit();
+                alert("수정완료!")
+            }
+        });
+    }
+    function loseFocus (a) {
+        if(a.name==='id'){
+            var formatVal=a.value.replace(/ /gi,"");
+            if(a.value.length!==formatVal.length) {
+                alert("이름에는 공백이 들어갈수없습니다");
+                a.value=formatVal;
+            }
+        }
+        else if(a.name==='password'){
+            if(a.value.length<4 && a.value.length>0){
+                alert("비밀번호는 최소 4자여야 합니다");
+                setTimeout(function(){
+                    a.focus(); }, 15);
+            }
+        }
+    }
+    function clickCancel() {
+        $('#contentForm').submit();
+    }
+    function inputFilename() {
+        var a=document.getElementById("ex_file").value;
+        var path=document.getElementById("ex_filename").value=a;
+        //var filename=path.replace(/\\/g,"");
+        var filename=path.replace("C:\\fakepath\\","");
+        document.getElementById("ex_filename").value=filename;
+    }
+</script>
+</body>
+</html>

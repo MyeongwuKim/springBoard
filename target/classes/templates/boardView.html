@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}" >
+    <meta charset="UTF-8">
+    <title>boardView</title>
+    <style>
+        body{
+            height: 100%; width: 100%;
+        }
+        a{text-decoration: none;}
+        table{
+            width: 80%;
+            text-align: center;
+            font-size: 20px;
+            margin: auto;
+            border-collapse: collapse;
+        }
+        table.head{background-color: lightsteelblue}
+        tr{height: 50px;}
+        td.id{width: 100px;}
+        td.title{width: 370px;}
+        td.date{width: 270px;}
+
+        .page{
+            position: relative;
+            transform: translateY(100px);
+            font-size: 30px;
+            margin: 0 auto;
+            height: 50px;
+            width: 50px;
+        }
+        #rowTitle:hover{background: wheat}
+    </style>
+</head>
+<body class="tableBody">
+<form action="/contentView" id="contentViewForm" method="get">
+    <input type="hidden" id="inputTitle" name="titleNumber">
+</form>
+<form action="/write" id="writeForm" method="get"></form>
+    <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        function titleClick(accounts) {
+            //click and submit
+            $('#inputTitle').val(accounts);
+            $('#contentViewForm').submit();
+        }
+        function clickWrite() {
+            $('#writeForm').submit();
+        }
+        function clickSearch() {
+            if($('#searchInput').val().length<=0)
+                alert("값을 입력해주세요");
+            else
+                $('#searchForm').submit();
+        }
+    </script>
+<h1>BOARD!</h1>
+<table border="1" class="head">
+<tr>
+    <td class="id">작성자</td>
+    <td class="title" >제목</td>
+    <td class="date">날짜</td>
+</tr>
+</table>
+<div style="height: 400px">
+<table border="1" class="bodyTable" th:each="account,i: ${accountList}"
+       th:if="${i.index} < ${boardInfo.currentPage}*5 " >
+    <tr th:object="${account} " th:if="${i.index} >= (${boardInfo.currentPage}-1)*5 ">
+        <td class="id" th:text="*{id}"></td>
+        <td class="title" id="rowTitle" style="cursor:pointer" th:onclick="|javascript:titleClick('*{titleNumber}')|"
+        th:text="*{title}" ></td>
+        <td class="date" th:text="*{date}"></td>
+    </tr>
+</table>
+</div>
+<div style="margin: 0 auto; height: 50px">
+    <button type="button" onclick="clickWrite()"
+            style="transform: translateX(10vw); width: 100px; height: 50px">
+        글작성<br> 하기</button>
+<form action="/searchView/1" id="searchForm" method="get">
+    <input type="search" id="searchInput" name="searchText"
+           style="position: relative; left: 860px; bottom: 30px; height: 30px">
+    <label style="position: relative; left: 605px; bottom: 30px">
+        <select name="searchTarget" id="SelectBox" form="searchForm" style="width: 70px; height: 30px;">
+            <option value="">선택</option>
+            <option value="title">제목</option>
+            <option value="id">작성자</option>
+        </select>
+    </label>
+ </form>
+    <button type="button" onclick="clickSearch()"
+            style="position: relative; left: 1040px; bottom: 60px; height: 30px">조회</button>
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<div class="page">
+    <script th:inline="javascript">
+        //create <a> dynamic elements
+        var maxPage=[[${boardInfo.getMaxPage()}]];
+
+        for (var i=1; i<=maxPage; i++) {
+            var $a = document.createElement('a');
+            $a.id="page"+i;
+            $a.href=i;
+            $a.innerText=i+" ";
+            $(".page").append($a);
+        }
+    </script>
+</div>
+</body>
+</html>
